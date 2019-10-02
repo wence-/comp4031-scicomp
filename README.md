@@ -8,7 +8,7 @@ Durham University Michaelmas term 2019
 ## Running the notebooks
 
 Notebooks from class, with questions to answer and things to try are
-in the ~material~ subdirectory.
+in the `material` subdirectory.
 
 To install the necessary software, I recommend doing so in a Python
 virtual environment. We need Python3. Doing something like:
