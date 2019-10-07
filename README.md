@@ -22,3 +22,11 @@ $ jupyter notebook
 ```
 
 Will pop up a browser window.
+
+If this results in an `AssertionError` (see
+https://github.com/jupyter/notebook/issues/4937), try installing an
+older version of jupyter-client in the virtual environment:
+
+```shell
+$ pip install jupyter-client==5.3.1
+```
