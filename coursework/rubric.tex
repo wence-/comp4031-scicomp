@@ -24,7 +24,7 @@
   urlcolor=ACMDarkBlue,
   filecolor=ACMDarkBlue}
 
-\title{COMP4031: Scientific Computing coursework}
+\title{COMP4031: Scientific Computing\\A simple model of convection}
 \author{Lawrence Mitchell\thanks{\texttt{lawrence.mitchell@durham.ac.uk}}}
 \date{October 2019}
 \renewcommand{\vec}[1]{\ensuremath{\mathbf{#1}}}
@@ -37,7 +37,9 @@ This assignment is to be completed and handed in via DUO. You should
 submit a Jupyter notebook containing both your code (which should be
 runnable), and a discussion of your implementation choices and
 observations and answers to the questions. You can use any of the code
-presented in the lectures, appropriately attributed.
+presented in the lectures, appropriately attributed. After submission,
+you should email to arrange a 15 minute slot to run through your
+notebook and discussion your implementation.
 
 \section{The convection-diffusion equation}
 \label{sec:part1}
@@ -64,22 +66,14 @@ field is to find $T$ satisfying
 \begin{equation}
   \label{eq:1}
   \begin{aligned}
-  \partial_t T - \nu \nabla^2 T + \nabla \cdot (\vec{w} T) &= 0 &&\text{ in } \Omega\\
+  \partial_t T - \nu \nabla^2 T + \vec{w} \cdot \nabla T &= 0 &&\text{ in } \Omega\\
   T &= 1 - y &&\text{ on } \partial\Omega
   \end{aligned}
 \end{equation}
 where $\nu > 0$ is a scalar constant controlling the relative
-importance of the convective and diffusive terms. To begin, we will
-set $\nu = 1$. We have carefully arranged that the wind $\vec{w}$ is
-has zero divergence, we can therefore rewrite the convective term as
-\begin{equation}
-  \label{eq:3}
-  \vec{w} \cdot \nabla T
-\end{equation}
-which simplifies the implementation somewhat.
-
-We will discretise this problem on the rectangular domain $\Omega =
-[0, 10] \times [0, 1]$. As shown in \cref{fig:omega}
+importance of the convective and diffusive terms. To begin, set
+$\nu = 1$. The problem is posed on the rectangular domain
+$\Omega = [0, 10] \times [0, 1]$, shown in \cref{fig:omega}
 \begin{figure}[htbp]
   \centering
   \begin{tikzpicture}
@@ -95,17 +89,19 @@ We will discretise this problem on the rectangular domain $\Omega =
 \end{figure}
 
 
-We will discretise this equation in two stages, first discretising in
-space, and then in time. We will use explicit timestepping, but you
-will be programming more than one such scheme, so you may find it
-helpful to structure your program to discretise the spatial term
-independently from the time derivative.
+We will discretise this equation using the method of lines, separately
+discretising in space and in time. The first two parts will both use
+use explicit timestepping schemes, but you will be programming more
+than one such scheme, so you may find it helpful to structure your
+program to discretise the spatial term independently from the time
+derivative.
 
-As a first step, we will use explicit Euler for the time derivative.
-Derive a finite difference discretisation for the spatial terms. You
-should use an appropriate centred difference scheme for the Laplacian
-term. For the first derivative, as we saw in class, we should use a
-one-sided derivative. There are a number of options here:
+For the first time discretisation, you should use explicit Euler for
+the time derivative. Derive a finite difference discretisation for the
+spatial terms. You should use an appropriate centred difference scheme
+for the Laplacian term. For the first derivative, as we saw in class,
+we should use a one-sided derivative. There are a number of options
+here:
 \begin{itemize}
 \item left neighbour;
 \item right neighbour;
@@ -116,9 +112,9 @@ whether you observe any differences in the accuracy and/or numerical
 stability of the solution scheme with the different choices for the
 $\nabla T$ term.
 
-This section is worth 30/100 marks. Marks are provided for
-correctness (10), elegant/simple code (10), and the discussion of the
-choice of derivative approximations (10).
+This section is worth 40/100 marks. Marks are provided for
+correctness (15), elegant/simple code (10), and the discussion of the
+choice of derivative approximations (15).
 
 \section{Numerical experiments, better time-stepping}
 \label{sec:part2}
@@ -128,7 +124,6 @@ Justify your choice based on the order of your spatial discretisation.
 
 Fix the final time at $t = 1$. Discuss answers to the following
 questions:
-
 \begin{itemize}
 \item For the two time-stepping schemes, how does time to solution
   change as you increase the resolution?
@@ -138,7 +133,7 @@ questions:
   impact on the stability of your solution?
 \end{itemize}
 
-This section is worth 30/100 marks. Marks are provided for
+This section is worth 40/100 marks. Marks are provided for
 correctness of the RK implementation, and the discussion in your
 answers to the questions.
 
@@ -155,16 +150,23 @@ stationary equation
   \end{aligned}
 \end{equation}
 To do this, we will discretise the operator and assemble it into a
-matrix. The solution for $T$ can then be obtained by solving the
+matrix, representing the operator
+\begin{equation}
+  \label{eq:7}
+  -\nu \nabla^2 + \vec{w} \cdot \nabla =: A.
+\end{equation}
+The stationary solution can be obtained by inverting this matrix $A$
+onto the right hand side
 matrix equation
 \begin{equation}
   \label{eq:5}
-  A T = F,
+  T_\text{stationary} = A^{-1} F
 \end{equation}
-where $A$ is the discretised operator, $T$ represents the vector of
-unknowns, and $F$ is the right hand side. You can either assemble into
-a dense matrix and use \href{https://docs.scipy.org/doc/numpy/reference/generated/numpy.linalg.solve.html}{\underline{\texttt{numpy.linalg.solve}}} to solve the
-system, or else assemble a sparse matrix and use
+where $T_\text{stationary}$ represents the vector of unknowns, and $F$
+is the discretised right hand side. You can either assemble into a
+dense matrix and use
+\href{https://docs.scipy.org/doc/numpy/reference/generated/numpy.linalg.solve.html}{\underline{\texttt{numpy.linalg.solve}}}
+to solve the system, or else assemble a sparse matrix and use
 \href{https://docs.scipy.org/doc/scipy/reference/sparse.linalg.html}{\underline{\texttt{scipy.sparse.linalg.spsolve}}}.
 
 Verify the correctness of your implementation against an exact
@@ -177,7 +179,7 @@ Use the discretised operator to implement an implicit time-stepping
 scheme (implicit Euler is fine). Does this allow you to get a faster
 time to solution for the experiments of \cref{sec:part2}?
 
-This section is worth 30/100 marks. Marks are provided for the correctness
+This section is worth 20/100 marks. Marks are provided for the correctness
 of the implementation (judged by appropriate convergence against an
 exact solution), and discussion of the comparison of the implicit
 time-stepping scheme to the explicit ones of \cref{sec:part2}.
@@ -185,7 +187,7 @@ time-stepping scheme to the explicit ones of \cref{sec:part2}.
 \section*{Mark breakdown}
 In addition to the marks for implementation and discussion as
 described above, an additional 10/100 marks will be given for the
-overall quality of the presentation of the work. A breakdown of the
+overall quality of the presentation of the work in the short viva. A breakdown of the
 mark scheme is shown in \cref{tab:marks}.
 \begin{table}[htbp]
   \centering
@@ -194,18 +196,18 @@ mark scheme is shown in \cref{tab:marks}.
     \toprule
     Descriptor & Marks\\
     \midrule
-    Part 1 correctness & 10\\
+    Part 1 correctness & 15\\
     Part 1 simplicity/elegance of implementation & 10\\
-    Part 1 discussion of differencing choices & 10\\
+    Part 1 discussion of differencing choices & 15\\
     \midrule
-    Part 2 correctness & 10\\
+    Part 2 correctness & 20\\
     Part 2 discussion and answers to questions & 20\\
     \midrule
-    Part 3 correctness and convergence test for stationary solution & 15\\
+    Part 3 correctness and convergence test for stationary solution & 10\\
     Part 3 implementation of implicit scheme and comparison to
-    explicit & 15\\
+    explicit & 10\\
     \midrule
-    Overall quality of presentation & 10\\
+    In-person presentation & 10\\
     \midrule
     \midrule
     Total & 100\\
