@@ -39,21 +39,23 @@ runnable), and a discussion of your implementation choices and
 observations and answers to the questions. You can use any of the code
 presented in the lectures, appropriately attributed. After submission,
 you should email to arrange a 15 minute slot to run through your
-notebook and discussion your implementation.
+notebook and discuss your implementation and observations.
 
 \section{The convection-diffusion equation}
 \label{sec:part1}
 
 We will simulate a very simple model of heat transfer driven by a
-``wind''. We will do so in a 2D vertical slice of the atmosphere.
-We'll use $T(x, y; t)$ to describe the temperature field, and impose a
-background wind field shown in \cref{fig:wind}
+prescribed wind field in a 2D vertical slice of the atmosphere.
+We denote the temperature field by $T(x, y; t)$ and impose a
+background wind field
 \begin{equation}
   \label{eq:2}
   \vec{w} = \begin{bmatrix}v_0\\v_1\end{bmatrix} = \begin{bmatrix}
     4 \sin 2\pi y \cos \frac{\pi x}{2}\\
-    -\sin \frac{\pi x}{2} \cos 2\pi y\end{bmatrix}.
+    -\sin \frac{\pi x}{2} \cos 2\pi y\end{bmatrix}
 \end{equation}
+shown in \cref{fig:wind}. The boundary of the domain is held at a
+prescribed (but spatially varying) temperature.
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.8\textwidth]{wind-field}
@@ -88,20 +90,18 @@ $\Omega = [0, 10] \times [0, 1]$, shown in \cref{fig:omega}
   \label{fig:omega}
 \end{figure}
 
-
 We will discretise this equation using the method of lines, separately
-discretising in space and in time. The first two parts will both use
-use explicit timestepping schemes, but you will be programming more
-than one such scheme, so you may find it helpful to structure your
-program to discretise the spatial term independently from the time
-derivative.
+discretising in space and in time. You may find it helpful to
+structure your program to discretise the spatial term independently
+from the time derivative so that you can reuse your code from
+\cref{sec:part1} in \cref{sec:part2}.
 
-For the first time discretisation, you should use explicit Euler for
-the time derivative. Derive a finite difference discretisation for the
-spatial terms. You should use an appropriate centred difference scheme
-for the Laplacian term. For the first derivative, as we saw in class,
-we should use a one-sided derivative. There are a number of options
-here:
+For this part, you should use explicit Euler for the time derivative.
+Your goal is to derive, and implement, a finite difference
+discretisation for the spatial terms. You should use an appropriate
+centred difference scheme for the Laplacian term. For the first
+derivative, as we saw in class, we should use a one-sided derivative.
+There are a number of options here:
 \begin{itemize}
 \item left neighbour;
 \item right neighbour;
@@ -110,7 +110,7 @@ here:
 Implement the timestepping scheme and spatial derivatives. Discuss
 whether you observe any differences in the accuracy and/or numerical
 stability of the solution scheme with the different choices for the
-$\nabla T$ term.
+$\nabla T$ term. Fix the final time for this step to be $t=1$.
 
 This section is worth 40/100 marks. Marks are provided for
 correctness (15), elegant/simple code (10), and the discussion of the
@@ -153,7 +153,7 @@ To do this, we will discretise the operator and assemble it into a
 matrix, representing the operator
 \begin{equation}
   \label{eq:7}
-  -\nu \nabla^2 + \vec{w} \cdot \nabla =: A.
+  A := -\nu \nabla^2 + \vec{w} \cdot \nabla.
 \end{equation}
 The stationary solution can be obtained by inverting this matrix $A$
 onto the right hand side
