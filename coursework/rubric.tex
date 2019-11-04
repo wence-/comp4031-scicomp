@@ -68,14 +68,21 @@ field is to find $T$ satisfying
 \begin{equation}
   \label{eq:1}
   \begin{aligned}
-  \partial_t T - \nu \nabla^2 T + \vec{w} \cdot \nabla T &= 0 &&\text{ in } \Omega\\
-  T &= 1 - y &&\text{ on } \partial\Omega
+  \partial_t T - \nu \nabla^2 T + \vec{w} \cdot \nabla T &= 0 &&\text{
+    in } \Omega &&\\
+  T(x, y; t) &= 1 - y &&\text{ on } \partial\Omega &&\text{ (boundary
+    condition)}\\
+  T(x, y; 0) &= 1 - y &&\text{ in } \Omega &&\text { (initial condition)}.
   \end{aligned}
 \end{equation}
 where $\nu > 0$ is a scalar constant controlling the relative
-importance of the convective and diffusive terms. To begin, set
-$\nu = 1$. The problem is posed on the rectangular domain
-$\Omega = [0, 10] \times [0, 1]$, shown in \cref{fig:omega}
+importance of the convective and diffusive terms. The second equation
+indicates that on the boundary of the domain ($\partial\Omega$), we
+apply a Dirichlet condition to $T$; while the third specifies the
+initial condition.
+
+To begin, set $\nu = 1$. The problem is posed on the rectangular
+domain $\Omega = [0, 10] \times [0, 1]$, shown in \cref{fig:omega}
 \begin{figure}[htbp]
   \centering
   \begin{tikzpicture}
